@@ -1,5 +1,9 @@
 <form #f="ngForm" (ngSubmit)="onSubmit(f)">
-  <div class="form-group">
+  <div
+    class="form-group"
+    [class.has-error]="!nome.valid && nome.touched"
+    [class.has-feedback]="!nome.valid && nome.touched"
+  >
     <div class="col-sm-12">
       <label for="nome" class="control-label">Nome</label>
     </div>
@@ -13,10 +17,18 @@
         placeholder="Nome"
         [(ngModel)]="usuario.nome"
         required
+        #nome="ngModel"
       />
     </div>
+    <div
+      *ngIf="!nome.valid && nome.touched"
+      class="alert alter-danger"
+      role="alert"
+    >
+      Nome é obrigatório
+    </div>
   </div>
-
+  <br />
   <div class="form-group">
     <div class="col-sm-12">
       <label for="email" class="control-label">Email</label>
