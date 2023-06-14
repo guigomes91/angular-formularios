@@ -61,6 +61,7 @@
         ngModel
         required
         #cep="ngModel"
+        (blur)="consultaCEP($any($event.target).value)"
       />
       <app-campo-control-erro
         [mostrarErro]="verificaValidTouched(cep)"
