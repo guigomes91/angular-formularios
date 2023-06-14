@@ -1,9 +1,5 @@
 <form #f="ngForm" (ngSubmit)="onSubmit(f)" class="form-horizontal">
-  <div
-    class="form-group"
-    [class.has-error]="!nome.valid && nome.touched"
-    [class.has-feedback]="!nome.valid && nome.touched"
-  >
+  <div class="form-group" [ngClass]="aplicaCssErro(nome)">
     <div class="col-sm-12">
       <label for="nome" class="control-label">Nome</label>
     </div>
@@ -19,16 +15,15 @@
         required
         #nome="ngModel"
       />
-    </div>
-    <div
-      *ngIf="!nome.valid && nome.touched"
-      class="alert alter-danger"
-      role="alert"
-    >
-      Nome é obrigatório
+      <app-campo-control-erro
+        [mostrarErro]="verificaValidTouched(nome)"
+        msgErro="Nome obrigatório."
+      >
+      </app-campo-control-erro>
     </div>
   </div>
-  <div class="form-group">
+
+  <div class="form-group" [ngClass]="aplicaCssErro(email)">
     <div class="col-sm-12">
       <label for="email" class="control-label">Email</label>
     </div>
@@ -43,16 +38,18 @@
         [(ngModel)]="usuario.email"
         required
         email
+        #email="ngModel"
       />
+      <app-campo-control-erro
+        [mostrarErro]="verificaValidTouched(email)"
+        msgErro="Email obrigatório."
+      >
+      </app-campo-control-erro>
     </div>
   </div>
 
-  <div
-    class="form-group"
-    [class.has-error]="!cep.valid && cep.touched"
-    [class.has-feedback]="!cep.valid && cep.touched"
-  >
-    <div class="col-md-3">
+  <div class="form-group" [ngClass]="aplicaCssErro(cep)">
+    <div class="col-md-3" [ngClass]="aplicaCssErro(cep)">
       <label for="cep" class="control-label">CEP</label>
       <input
         type="text"
@@ -63,6 +60,11 @@
         required
         #cep="ngModel"
       />
+      <app-campo-control-erro
+        [mostrarErro]="verificaValidTouched(cep)"
+        msgErro="Cep obrigatório."
+      >
+      </app-campo-control-erro>
     </div>
 
     <div class="col-md-3">
@@ -90,11 +92,7 @@
     </div>
   </div>
 
-  <div
-    class="form-group"
-    [class.has-error]="!rua.valid && rua.touched"
-    [class.has-feedback]="!rua.valid && rua.touched"
-  >
+  <div class="form-group" [ngClass]="aplicaCssErro(rua)">
     <div class="col-sm-12">
       <label for="rua" class="control-label">Rua</label>
     </div>
@@ -111,13 +109,11 @@
         readonly
       />
     </div>
-    <div
-      *ngIf="!rua.valid && rua.touched"
-      class="alert alter-danger"
-      role="alert"
+    <app-campo-control-erro
+      [mostrarErro]="verificaValidTouched(rua)"
+      msgErro="Rua obrigatório."
     >
-      Rua é obrigatório
-    </div>
+    </app-campo-control-erro>
   </div>
 
   <div class="form-group">
