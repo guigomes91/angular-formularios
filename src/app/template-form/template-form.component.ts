@@ -13,15 +13,18 @@ export class TemplateFormComponent implements OnInit {
     email: null
   };
 
-  onSubmit(formulario: any) {
-    console.log(formulario.value);
-  }
-
   constructor(
     private http: HttpClient
   ) { }
 
   ngOnInit() {
+  }
+
+  onSubmit(formulario: any) {
+    console.log(formulario.value);
+
+    this.http.post('https://httpbin.org/post', JSON.stringify(formulario.value))
+      .subscribe(dados => console.log(dados));
   }
 
   verificaValidTouched(campo: any) {
