@@ -46,8 +46,9 @@ export class DataFormComponent implements OnInit {
   }
 
   onSubmit() {
+    console.log(this.formulario.value);
+
     if (this.formulario.valid) {
-      console.log(this.formulario.value);
       this.http
         .post('https://httpbin.org/post', JSON.stringify(this.formulario.value))
         .subscribe(
@@ -59,8 +60,19 @@ export class DataFormComponent implements OnInit {
           (error: any) => alert('erro')
         );
     } else {
-      alert('Campos não preenchidos corretamente!');
+      this.verificaValidacoesForm(this.formulario);
     }
+  }
+
+  verificaValidacoesForm(formGroup: FormGroup) {
+    Object.keys(formGroup.controls).forEach(campo => {
+      const controle = this.formulario.get(campo);
+      controle?.markAsDirty();
+
+      if (controle instanceof FormGroup) {
+        this.verificaValidacoesForm(controle);
+      }
+    });
   }
 
   resetar() {
@@ -69,7 +81,8 @@ export class DataFormComponent implements OnInit {
 
   verificaValidTouched(campo: string): boolean | any {
     return (
-      !this.formulario.get(campo)?.valid && this.formulario.get(campo)?.touched
+      !this.formulario.get(campo)?.valid &&
+        (this.formulario.get(campo)?.touched || this.formulario.get(campo)?.dirty)
     );
   }
 
