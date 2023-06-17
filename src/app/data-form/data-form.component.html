@@ -56,6 +56,7 @@
           class="form-control"
           id="cep"
           formControlName="cep"
+          (blur)="consultaCEP()"
         />
         <app-campo-control-erro
           [mostrarErro]="verificaValidTouched('endereco.cep')"
