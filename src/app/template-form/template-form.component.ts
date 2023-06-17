@@ -24,7 +24,10 @@ export class TemplateFormComponent implements OnInit {
     console.log(formulario.value);
 
     this.http.post('https://httpbin.org/post', JSON.stringify(formulario.value))
-      .subscribe(dados => console.log(dados));
+      .subscribe(dados => {
+        console.log(dados);
+        formulario.form.reset();
+      });
   }
 
   verificaValidTouched(campo: any) {
