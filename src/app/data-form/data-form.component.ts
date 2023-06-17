@@ -3,6 +3,7 @@ import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { DropdownService } from '../shared/services/dropdown.service';
 import { EstadoBr } from '../shared/models/estado-br';
+import { ConsultaCepService } from '../shared/services/consulta-cep.service';
 
 @Component({
   selector: 'app-data-form',
@@ -16,11 +17,12 @@ export class DataFormComponent implements OnInit {
   constructor(
     private formBuilder: FormBuilder,
     private http: HttpClient,
-    private dropDownService: DropdownService
+    private dropDownService: DropdownService,
+    private cepService: ConsultaCepService
   ) {}
 
   ngOnInit(): void {
-    this.dropDownService.getEstadosBR().subscribe(res => {
+    this.dropDownService.getEstadosBR().subscribe((res) => {
       this.estados = res;
     });
     console.log(this.estados);
@@ -54,14 +56,11 @@ export class DataFormComponent implements OnInit {
   }
 
   onSubmit() {
-    console.log(this.formulario.value);
-
     if (this.formulario.valid) {
       this.http
         .post('https://httpbin.org/post', JSON.stringify(this.formulario.value))
         .subscribe(
-          (dados) => {
-            console.log(dados);
+          () => {
             //reseta o form
             this.resetar();
           },
@@ -111,22 +110,14 @@ export class DataFormComponent implements OnInit {
   consultaCEP() {
     let cep = this.formulario.get('endereco.cep')?.value;
 
-    //Nova variável "cep" somente com dígitos.
-    const cepReplace = cep.replace(/\D/g, '');
-    if (cepReplace != '') {
-      let validacep = /^\d{8}$/;
-
-      //Valida o formato do CEP.
-      if (validacep.test(cepReplace)) {
-        this.resetaDadosForm(this.formulario);
-        this.http
-          .get(`//viacep.com.br/ws/${cep}/json`)
-          .subscribe((dados) => this.populaDadosForm(dados, this.formulario));
-      }
+    if (cep != null && cep !== '') {
+      this.cepService
+        .consultaCep(cep)
+        ?.subscribe((dados) => this.populaDadosForm(dados));
     }
   }
 
-  populaDadosForm(dados: any, formulario: any) {
+  populaDadosForm(dados: any) {
     this.formulario.patchValue({
       endereco: {
         rua: dados.logradouro,
@@ -141,7 +132,7 @@ export class DataFormComponent implements OnInit {
     this.formulario.get('nome')?.setValue('Guilherme');
   }
 
-  resetaDadosForm(formulario: any) {
+  resetaDadosForm() {
     this.formulario.patchValue({
       endereco: {
         rua: null,
