@@ -1,10 +1,8 @@
 import { HttpClient } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
-import {
-  FormBuilder,
-  FormGroup,
-  Validators,
-} from '@angular/forms';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { DropdownService } from '../shared/services/dropdown.service';
+import { EstadoBr } from '../shared/models/estado-br';
 
 @Component({
   selector: 'app-data-form',
@@ -13,10 +11,17 @@ import {
 })
 export class DataFormComponent implements OnInit {
   formulario!: FormGroup;
+  estados: EstadoBr[] = [];
 
-  constructor(private formBuilder: FormBuilder, private http: HttpClient) {}
+  constructor(
+    private formBuilder: FormBuilder,
+    private http: HttpClient,
+    private dropDownService: DropdownService
+  ) {}
 
   ngOnInit(): void {
+    console.log(this.dropDownService.getEstadosBR());
+
     /*this.formulario = new FormGroup({
       nome: new FormControl(null),
       email: new FormControl(null)
@@ -40,8 +45,8 @@ export class DataFormComponent implements OnInit {
         rua: [null, Validators.required],
         bairro: [null, Validators.required],
         cidade: [null, Validators.required],
-        estado: [null, Validators.required]
-      })
+        estado: [null, Validators.required],
+      }),
     });
   }
 
@@ -65,7 +70,7 @@ export class DataFormComponent implements OnInit {
   }
 
   verificaValidacoesForm(formGroup: FormGroup) {
-    Object.keys(formGroup.controls).forEach(campo => {
+    Object.keys(formGroup.controls).forEach((campo) => {
       const controle = this.formulario.get(campo);
       controle?.markAsDirty();
 
@@ -82,7 +87,7 @@ export class DataFormComponent implements OnInit {
   verificaValidTouched(campo: string): boolean | any {
     return (
       !this.formulario.get(campo)?.valid &&
-        (this.formulario.get(campo)?.touched || this.formulario.get(campo)?.dirty)
+      (this.formulario.get(campo)?.touched || this.formulario.get(campo)?.dirty)
     );
   }
 
@@ -105,14 +110,15 @@ export class DataFormComponent implements OnInit {
 
     //Nova variável "cep" somente com dígitos.
     const cepReplace = cep.replace(/\D/g, '');
-    if (cepReplace != "") {
+    if (cepReplace != '') {
       let validacep = /^\d{8}$/;
 
       //Valida o formato do CEP.
-      if(validacep.test(cepReplace)) {
+      if (validacep.test(cepReplace)) {
         this.resetaDadosForm(this.formulario);
-        this.http.get(`//viacep.com.br/ws/${cep}/json`)
-          .subscribe(dados => this.populaDadosForm(dados, this.formulario));
+        this.http
+          .get(`//viacep.com.br/ws/${cep}/json`)
+          .subscribe((dados) => this.populaDadosForm(dados, this.formulario));
       }
     }
   }
@@ -125,8 +131,8 @@ export class DataFormComponent implements OnInit {
         complemento: dados.complemento,
         bairro: dados.bairro,
         cidade: dados.localidade,
-        estado: dados.uf
-      }
+        estado: dados.uf,
+      },
     });
 
     this.formulario.get('nome')?.setValue('Guilherme');
@@ -139,8 +145,8 @@ export class DataFormComponent implements OnInit {
         complemento: null,
         bairro: null,
         cidade: null,
-        estado: null
-      }
+        estado: null,
+      },
     });
   }
 }
