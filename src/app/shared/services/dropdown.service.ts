@@ -8,8 +8,6 @@ import { Observable } from 'rxjs';
 })
 export class DropdownService {
 
-  estados: Object = new Object();
-
   constructor(
     private http: HttpClient
   ) { }
