@@ -32,4 +32,11 @@ export class DropdownService {
       { nome: 'Rubi', desc: 'Rubi'},
     ]
   }
+
+  getNewsletter() {
+    return [
+      {valor: 's', desc: 'Sim'},
+      {valor: 'n', desc: 'Não'}
+    ]
+  }
 }
