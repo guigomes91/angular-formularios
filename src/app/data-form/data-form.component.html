@@ -117,10 +117,10 @@
           formControlName="bairro"
         />
         <app-campo-control-erro
-        [mostrarErro]="verificaValidTouched('endereco.bairro')"
-        msgErro="Bairro é obrigatório."
-      >
-      </app-campo-control-erro>
+          [mostrarErro]="verificaValidTouched('endereco.bairro')"
+          msgErro="Bairro é obrigatório."
+        >
+        </app-campo-control-erro>
       </div>
 
       <div class="col-md-4" [ngClass]="aplicaCssErro('endereco.cidade')">
@@ -132,33 +132,43 @@
           formControlName="cidade"
         />
         <app-campo-control-erro
-        [mostrarErro]="verificaValidTouched('endereco.cidade')"
-        msgErro="Cidade é obrigatório."
-      >
-      </app-campo-control-erro>
+          [mostrarErro]="verificaValidTouched('endereco.cidade')"
+          msgErro="Cidade é obrigatório."
+        >
+        </app-campo-control-erro>
       </div>
 
       <div class="col-md-3" [ngClass]="aplicaCssErro('endereco.estado')">
         <label for="estado" class="control-label">Estado</label>
-        <select
-          class="form-control"
-          id="estado"
-          formControlName="estado"
-        >
-          <option *ngFor="let estado of estados | async" [value]="estado.sigla">{{estado.nome}}</option>
+        <select class="form-control" id="estado" formControlName="estado">
+          <option *ngFor="let estado of estados | async" [value]="estado.sigla">
+            {{ estado.nome }}
+          </option>
         </select>
         <app-campo-control-erro
-        [mostrarErro]="verificaValidTouched('endereco.estado')"
-        msgErro="Estado é obrigatório."
-      >
-      </app-campo-control-erro>
+          [mostrarErro]="verificaValidTouched('endereco.estado')"
+          msgErro="Estado é obrigatório."
+        >
+        </app-campo-control-erro>
       </div>
+    </div>
+  </div>
+
+  <div class="form-group">
+    <div class="col-md-3" [ngClass]="aplicaCssErro('cargo')">
+      <label for="cargo" class="control-label">Cargo</label>
+      <select class="form-control" id="cargo" formControlName="cargo" [compareWith]="compararCargos">
+        <option *ngFor="let cargo of cargos" [ngValue]="cargo">
+          {{ cargo.desc }}
+        </option>
+      </select>
     </div>
   </div>
 
   <br />
   <button type="submit" class="btn btn-primary">Submit</button>
   <button class="btn" (click)="resetar()">Cancelar</button>
+  <button class="btn" (click)="setarCargo()">Cargo</button>
 
   <app-form-debug [form]="formulario"></app-form-debug>
 </form>
