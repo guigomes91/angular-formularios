@@ -1,10 +1,17 @@
 import { HttpClient } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
-import { FormArray, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
+import {
+  FormArray,
+  FormBuilder,
+  FormControl,
+  FormGroup,
+  Validators,
+} from '@angular/forms';
 import { DropdownService } from '../shared/services/dropdown.service';
 import { EstadoBr } from '../shared/models/estado-br';
 import { ConsultaCepService } from '../shared/services/consulta-cep.service';
 import { Observable } from 'rxjs';
+import { FormValidations } from '../shared/services/form-validation';
 
 @Component({
   selector: 'app-data-form',
@@ -58,13 +65,16 @@ export class DataFormComponent implements OnInit {
       tecnologias: [null],
       newsletter: ['s'],
       termos: [null, Validators.pattern('true')],
-      frameworks: this.buildFrameworks()
+      frameworks: this.buildFrameworks(),
     });
   }
 
   buildFrameworks() {
-    const values = this.frameworks.map(v => new FormControl(false));
-    return this.formBuilder.array(values);
+    const values = this.frameworks.map((v) => new FormControl(false));
+    return this.formBuilder.array(
+      values,
+      FormValidations.requiredMinCheckbox(1)
+    );
   }
 
   onSubmit() {
@@ -72,11 +82,11 @@ export class DataFormComponent implements OnInit {
 
     valueSubmit = Object.assign(valueSubmit, {
       frameworks: valueSubmit.frameworks
-        .map((v: any, i: any) => v ? this.frameworks[i] : null)
-        .filter((v: any) => v !== null)
+        .map((v: any, i: any) => (v ? this.frameworks[i] : null))
+        .filter((v: any) => v !== null),
     });
 
-    console.log(valueSubmit)
+    console.log(valueSubmit);
 
     if (this.formulario.valid) {
       this.http
@@ -167,16 +177,18 @@ export class DataFormComponent implements OnInit {
   }
 
   setarCargo() {
-    const cargo = { nome: 'Dev', nivel: 'Pleno', desc: 'Dev Pl'};
+    const cargo = { nome: 'Dev', nivel: 'Pleno', desc: 'Dev Pl' };
     this.formulario.get('cargo')?.setValue(cargo);
   }
 
   compararCargos(obj1: any, obj2: any) {
-    return obj1 && obj2 ? (obj1.nome === obj2.nome && obj1.nivel === obj2.nivel) : obj1 === obj2;
+    return obj1 && obj2
+      ? obj1.nome === obj2.nome && obj1.nivel === obj2.nivel
+      : obj1 === obj2;
   }
 
   setarTecnologias() {
-    this.formulario.get('tecnologias')?.setValue(['Java', 'Javascript', 'PHP'])
+    this.formulario.get('tecnologias')?.setValue(['Java', 'Javascript', 'PHP']);
   }
 
   getControls() {

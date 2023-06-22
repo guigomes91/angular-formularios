@@ -227,6 +227,11 @@
         </div>
       </div>
     </div>
+    <app-campo-control-erro
+          [mostrarErro]="!this.formulario.get('frameworks')?.valid"
+          msgErro="Selecione 1 opção"
+        >
+        </app-campo-control-erro>
   </div>
 
   <br />
