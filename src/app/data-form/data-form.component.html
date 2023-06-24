@@ -44,6 +44,21 @@
         msgErro="Email inválido."
       >
       </app-campo-control-erro>
+      <app-campo-control-erro
+        [mostrarErro]="formulario.get('email')?.status === 'PENDING'"
+        msgErro="Validando email..."
+      >
+      </app-campo-control-erro>
+      <app-campo-control-erro
+        [mostrarErro]="formulario.get('email')?.status === 'VALID'"
+        msgErro="Email valido!"
+      >
+      </app-campo-control-erro>
+      <app-campo-control-erro
+        [mostrarErro]="formulario.get('email')?.hasError('emailInvalido')"
+        msgErro="Email já cadastrado"
+      >
+      </app-campo-control-erro>
     </div>
   </div>
 
