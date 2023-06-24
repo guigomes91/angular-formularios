@@ -51,7 +51,7 @@ export class DataFormComponent implements OnInit {
         [
           Validators.required,
           Validators.minLength(3),
-          Validators.maxLength(20),
+          Validators.maxLength(10),
         ],
       ],
       email: [null, [Validators.required, Validators.email], this.validarEmail.bind(this)],
