@@ -10,9 +10,10 @@ import {
 import { DropdownService } from '../shared/services/dropdown.service';
 import { EstadoBr } from '../shared/models/estado-br';
 import { ConsultaCepService } from '../shared/services/consulta-cep.service';
-import { Observable, map } from 'rxjs';
+import { EMPTY, Observable, distinctUntilChanged, empty, map, switchMap, tap } from 'rxjs';
 import { FormValidations } from '../shared/services/form-validation';
 import { VerificaEmailService } from './services/verifica-email.service';
+import { EMPTY_OBSERVER } from 'rxjs/internal/Subscriber';
 
 @Component({
   selector: 'app-data-form',
@@ -37,7 +38,6 @@ export class DataFormComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-
     //this.verificaEmailService.verificarEmail('email@email.com').subscribe();
 
     this.estados = this.dropDownService.getEstadosBR();
@@ -54,7 +54,11 @@ export class DataFormComponent implements OnInit {
           Validators.maxLength(10),
         ],
       ],
-      email: [null, [Validators.required, Validators.email], this.validarEmail.bind(this)],
+      email: [
+        null,
+        [Validators.required, Validators.email],
+        this.validarEmail.bind(this),
+      ],
       confirmarEmail: [null, [FormValidations.equalsTo('email')]],
 
       endereco: this.formBuilder.group({
@@ -73,6 +77,15 @@ export class DataFormComponent implements OnInit {
       termos: [null, Validators.pattern('true')],
       frameworks: this.buildFrameworks(),
     });
+
+    this.formulario.get('endereco.cep')?.statusChanges
+      .pipe(
+        distinctUntilChanged(),
+        tap((value: any) => console.log('valor do CEP: ', value)),
+        switchMap(status => status === 'VALID' ? this.cepService.consultaCep(this.formulario.get('endereco.cep')?.value)
+        : EMPTY)
+      )
+      .subscribe(dados => dados ? this.populaDadosForm(dados) : {});
   }
 
   buildFrameworks() {
@@ -209,7 +222,10 @@ export class DataFormComponent implements OnInit {
   }
 
   validarEmail(formControl: FormControl) {
-    return this.verificaEmailService.verificarEmail(formControl.value)
-      .pipe(map(emailExiste => emailExiste ? { emailInvalido : true} : null));
+    return this.verificaEmailService
+      .verificarEmail(formControl.value)
+      .pipe(
+        map((emailExiste) => (emailExiste ? { emailInvalido: true } : null))
+      );
   }
 }
