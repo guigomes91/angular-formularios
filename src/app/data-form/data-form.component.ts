@@ -1,27 +1,22 @@
 import { HttpClient } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
-import {
-  FormArray,
-  FormBuilder,
-  FormControl,
-  FormGroup,
-  Validators,
-} from '@angular/forms';
-import { DropdownService } from '../shared/services/dropdown.service';
+import { FormArray, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
+import { distinctUntilChanged, EMPTY, map, Observable, switchMap, tap } from 'rxjs';
+
+import { BaseFormComponent } from '../shared/base-form/base-form.component';
 import { EstadoBr } from '../shared/models/estado-br';
 import { ConsultaCepService } from '../shared/services/consulta-cep.service';
-import { EMPTY, Observable, distinctUntilChanged, empty, map, switchMap, tap } from 'rxjs';
+import { DropdownService } from '../shared/services/dropdown.service';
 import { FormValidations } from '../shared/services/form-validation';
 import { VerificaEmailService } from './services/verifica-email.service';
-import { EMPTY_OBSERVER } from 'rxjs/internal/Subscriber';
 
 @Component({
   selector: 'app-data-form',
   templateUrl: './data-form.component.html',
   styleUrls: ['./data-form.component.css'],
 })
-export class DataFormComponent implements OnInit {
-  formulario!: FormGroup;
+export class DataFormComponent extends BaseFormComponent implements OnInit {
+
   estados!: Observable<EstadoBr[]>;
   cargos: any[] = [];
   tecnologias: any[] = [];
@@ -35,7 +30,9 @@ export class DataFormComponent implements OnInit {
     private dropDownService: DropdownService,
     private cepService: ConsultaCepService,
     private verificaEmailService: VerificaEmailService
-  ) {}
+  ) {
+    super();
+  }
 
   ngOnInit(): void {
     //this.verificaEmailService.verificarEmail('email@email.com').subscribe();
@@ -96,7 +93,7 @@ export class DataFormComponent implements OnInit {
     );
   }
 
-  onSubmit() {
+  submit() {
     let valueSubmit = Object.assign({}, this.formulario.value);
 
     valueSubmit = Object.assign(valueSubmit, {
@@ -120,49 +117,6 @@ export class DataFormComponent implements OnInit {
     } else {
       this.verificaValidacoesForm(this.formulario);
     }
-  }
-
-  verificaValidacoesForm(formGroup: FormGroup) {
-    Object.keys(formGroup.controls).forEach((campo) => {
-      const controle = this.formulario.get(campo);
-      controle?.markAsDirty();
-
-      if (controle instanceof FormGroup) {
-        this.verificaValidacoesForm(controle);
-      }
-    });
-  }
-
-  resetar() {
-    this.formulario.reset();
-  }
-
-  verificaValidTouched(campo: string): boolean | any {
-    return (
-      !this.formulario.get(campo)?.valid &&
-      (this.formulario.get(campo)?.touched || this.formulario.get(campo)?.dirty)
-    );
-  }
-
-  verificaRequired(campo: string): boolean | any {
-    return (
-      !this.formulario.get(campo)?.hasError('required') &&
-      (this.formulario.get(campo)?.touched || this.formulario.get(campo)?.dirty)
-    );
-  }
-
-  verificaEmailInvalido() {
-    let campoEmail = this.formulario.get('email');
-    if (campoEmail?.errors) {
-      return campoEmail?.errors['email'] && campoEmail.touched;
-    }
-  }
-
-  aplicaCssErro(campo: string) {
-    return {
-      'has-error': this.verificaValidTouched(campo),
-      'has-feedback': this.verificaValidTouched(campo),
-    };
   }
 
   consultaCEP() {

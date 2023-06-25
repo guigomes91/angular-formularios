@@ -39,7 +39,6 @@ export class InputFieldComponent implements ControlValueAccessor {
   onTouchedCb: (_: any) => void = () => {};
 
   writeValue(v: any): void {
-
     if (v !== this.innerValue) {
       this.innerValue = v;
       this.onChangeCb(v);
