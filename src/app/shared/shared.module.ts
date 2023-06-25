@@ -5,11 +5,12 @@ import { NgModule } from '@angular/core';
 import { CampoControlErroComponent } from './campo-control-erro/campo-control-erro.component';
 import { FormDebugComponent } from './form-debug/form-debug.component';
 import { ErrorMsgComponent } from './error-msg/error-msg.component';
-import { ReactiveFormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { InputFieldComponent } from './input-field/input-field.component';
 
 @NgModule({
-  declarations: [FormDebugComponent, CampoControlErroComponent, ErrorMsgComponent],
-  imports: [CommonModule, HttpClientModule, ReactiveFormsModule],
-  exports: [FormDebugComponent, CampoControlErroComponent, ErrorMsgComponent]
+  declarations: [FormDebugComponent, CampoControlErroComponent, ErrorMsgComponent, InputFieldComponent],
+  imports: [CommonModule, HttpClientModule, ReactiveFormsModule, FormsModule],
+  exports: [FormDebugComponent, CampoControlErroComponent, ErrorMsgComponent, InputFieldComponent]
 })
 export class SharedModule {}
